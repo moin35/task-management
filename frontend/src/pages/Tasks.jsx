@@ -75,7 +75,8 @@ const Tasks = () => {
   
       dispatch(updateTaskStatus({ id: taskId, status: newStatus }))
         .unwrap()
-        .catch(() => dispatch(revertUpdate({ id: taskId, original: originalTask }))); // Added missing parenthesis
+        .then(() => dispatch(fetchTasks()))  // Add fetch after successful status update
+        .catch(() => dispatch(revertUpdate({ id: taskId, original: originalTask })));
     }
   };
 
@@ -108,8 +109,9 @@ const Tasks = () => {
     dispatch(optimisticUpdate(newTaskWithStatus));
     dispatch(createTask(newTaskWithStatus))
       .unwrap()
+      .then(() => dispatch(fetchTasks())) // Add fetch after success
       .catch(() => dispatch(revertUpdate({ id: tempId })));
-
+  
     setNewTask({ name: "", description: "", dueDate: "" });
     setOpenDialog(false);
   };
@@ -121,11 +123,11 @@ const Tasks = () => {
     dispatch(optimisticUpdate({ id: taskId, ...editedTask }));
     dispatch(updateTask({ id: taskId, ...editedTask }))
       .unwrap()
+      .then(() => dispatch(fetchTasks())) // Add fetch after success
       .catch(() => dispatch(revertUpdate({ id: taskId, original })));
     
     setEditingTaskId(null);
   };
-
   // Delete task
   const handleDeleteTask = (taskId) => {
     const original = tasks.find(t => t.id === taskId);
@@ -133,6 +135,7 @@ const Tasks = () => {
     dispatch(optimisticUpdate({ id: taskId, _deleting: true }));
     dispatch(deleteTask(taskId))
       .unwrap()
+      .then(() => dispatch(fetchTasks())) // Add fetch after success
       .catch(() => dispatch(revertUpdate({ id: taskId, original })));
   };
 
