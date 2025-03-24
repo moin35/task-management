@@ -2,7 +2,6 @@
 
 A full-stack task management system with React frontend, Laravel backend, and MySQL database, containerized using Docker.
 
-![Application Architecture](https://via.placeholder.com/800x400.png?text=Task+Manager+Architecture)
 
 ## Features
 
